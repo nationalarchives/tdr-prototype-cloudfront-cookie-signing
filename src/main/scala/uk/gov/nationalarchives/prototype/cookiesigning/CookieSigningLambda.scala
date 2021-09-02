@@ -1,12 +1,15 @@
 package uk.gov.nationalarchives.prototype.cookiesigning
 
-import com.amazonaws.services.lambda.runtime.{Context, RequestHandler}
+import java.io.{InputStream, OutputStream}
+import java.nio.charset.StandardCharsets
 
-class CookieSigningLambda extends RequestHandler[String, String] {
-  override def handleRequest(input: String, context: Context): String = {
+import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
+
+class CookieSigningLambda extends RequestStreamHandler {
+  override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     println("input:")
-    println(input)
+    println(new String(input.readAllBytes, StandardCharsets.UTF_8))
 
-    "hello world"
+    output.write("hello world".getBytes)
   }
 }
