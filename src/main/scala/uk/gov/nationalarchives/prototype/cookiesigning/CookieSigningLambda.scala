@@ -10,6 +10,14 @@ class CookieSigningLambda extends RequestStreamHandler {
     println("input:")
     println(new String(input.readAllBytes, StandardCharsets.UTF_8))
 
-    output.write("hello world".getBytes)
+    val response =
+      """{
+        |    "isBase64Encoded": false,
+        |    "statusCode": 200,
+        |    "headers": { "headerName": "headerValue" },
+        |    "body": "Hello world"
+        |}
+        |""".stripMargin
+    output.write(response.getBytes)
   }
 }
