@@ -1,7 +1,6 @@
 package uk.gov.nationalarchives.prototype.cookiesigning
 
 import java.io.{InputStream, OutputStream}
-import java.nio.charset.StandardCharsets
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
 import java.time.temporal.ChronoUnit
@@ -11,11 +10,25 @@ import com.amazonaws.services.cloudfront.CloudFrontCookieSigner
 import com.amazonaws.services.cloudfront.util.SignerUtils.Protocol
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import com.typesafe.config.{Config, ConfigFactory}
+import io.circe.parser.parse
+
+import scala.io.Source
 
 class CookieSigningLambda extends RequestStreamHandler {
   override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
+    val rawInput = Source.fromInputStream(input).mkString
+
     println("input:")
-    println(new String(input.readAllBytes, StandardCharsets.UTF_8))
+    println(rawInput)
+
+    val json = parse(rawInput).getOrElse(throw new RuntimeException(s"Could not parse $rawInput as JSON"))
+
+    // Pull the auth header out of the input JSON. The real implementation should be less fragile!
+    val authHeader = json.hcursor.downField("headers").focus.flatMap(_.asArray).get
+      .find(j => j.findAllByKey("authorization").nonEmpty).get
+      .hcursor.get[String]("authorization").toOption.get
+
+    println(s"Authorization header: '$authHeader'")
 
     val config: Config = ConfigFactory.load
 
@@ -61,7 +74,7 @@ class CookieSigningLambda extends RequestStreamHandler {
         |         "${cookies.getSignature.getKey}=${cookies.getSignature.getValue}; Path=/; Secure; HttpOnly"
         |       ]
         |    },
-        |    "body": "Hello world"
+        |    "body": "{}"
         |}
         |""".stripMargin
     output.write(response.getBytes)
