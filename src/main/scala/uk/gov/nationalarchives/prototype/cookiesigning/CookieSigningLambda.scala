@@ -49,10 +49,12 @@ class CookieSigningLambda extends RequestStreamHandler {
       s"""{
         |    "isBase64Encoded": false,
         |    "statusCode": 200,
-        |    "headers": {
-        |       "Set-Cookie": "${cookies.getPolicy.getKey}=${cookies.getPolicy.getValue}; Path=/; Secure; HttpOnly",
-        |       "Set-Cookie": "${cookies.getKeyPairId.getKey}=${cookies.getKeyPairId.getValue}; Path=/; Secure; HttpOnly",
-        |       "Set-Cookie": "${cookies.getSignature.getKey}=${cookies.getSignature.getValue}; Path=/; Secure; HttpOnly"
+        |    "multiValueHeaders": {
+        |       "Set-Cookie": [
+        |         "${cookies.getPolicy.getKey}=${cookies.getPolicy.getValue}; Path=/; Secure; HttpOnly",
+        |         "${cookies.getKeyPairId.getKey}=${cookies.getKeyPairId.getValue}; Path=/; Secure; HttpOnly",
+        |         "${cookies.getSignature.getKey}=${cookies.getSignature.getValue}; Path=/; Secure; HttpOnly"
+        |       ]
         |    },
         |    "body": "Hello world"
         |}
