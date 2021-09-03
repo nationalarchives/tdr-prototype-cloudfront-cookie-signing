@@ -43,7 +43,8 @@ class CookieSigningLambda extends RequestStreamHandler {
     val keyFactory = KeyFactory.getInstance("RSA")
     val privateKey = keyFactory.generatePrivate(keySpec)
 
-    val s3ObjectKey = s"*"
+    // Authorisation rule: only allow users to upload files to a folder corresponding to their user ID
+    val s3ObjectKey = s"$userId/*"
 
     val protocol = Protocol.https
     val distributionDomain = "test-signed-cookies.tdr-sandbox.nationalarchives.gov.uk"
