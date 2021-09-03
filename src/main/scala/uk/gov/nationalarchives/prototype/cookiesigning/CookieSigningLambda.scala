@@ -14,7 +14,7 @@ class CookieSigningLambda extends RequestStreamHandler {
       """{
         |    "isBase64Encoded": false,
         |    "statusCode": 200,
-        |    "headers": { "headerName": "headerValue" },
+        |    "headers": { "Set-Cookie": "SomeCookieName=SomeCookieValue; Path=/; Secure; HttpOnly" },
         |    "body": "Hello world"
         |}
         |""".stripMargin
