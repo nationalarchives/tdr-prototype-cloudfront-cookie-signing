@@ -27,8 +27,9 @@ class CookieSigningLambda extends RequestStreamHandler {
     val authHeader = json.hcursor.downField("headers").focus.flatMap(_.asArray).get
       .find(j => j.findAllByKey("authorization").nonEmpty).get
       .hcursor.get[String]("authorization").toOption.get
+    val token = authHeader.stripPrefix("Bearer ")
 
-    println(s"Authorization header: '$authHeader'")
+    println(s"Authorization token: '$token'")
 
     val config: Config = ConfigFactory.load
 
