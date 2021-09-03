@@ -12,9 +12,9 @@ object LambdaRunner extends App {
 
   val input =
     s"""{
-      |  "headers": [
-      |    {"authorization": "Bearer $accessToken"}
-      |  ]
+      |  "headers": {
+      |    "Authorization": "Bearer $accessToken"
+      |  }
       |}""".stripMargin
   val inputStream = new ByteArrayInputStream(input.getBytes)
 

@@ -25,9 +25,7 @@ class CookieSigningLambda extends RequestStreamHandler {
     val json = parse(rawInput).getOrElse(throw new RuntimeException(s"Could not parse $rawInput as JSON"))
 
     // Pull the auth header out of the input JSON. The real implementation should be less fragile!
-    val authHeader = json.hcursor.downField("headers").focus.flatMap(_.asArray).get
-      .find(j => j.findAllByKey("authorization").nonEmpty).get
-      .hcursor.get[String]("authorization").toOption.get
+    val authHeader = json.hcursor.downField("headers").get[String]("Authorization").toOption.get
     val rawToken = authHeader.stripPrefix("Bearer ")
 
     val decoded = JWT.decode(rawToken)
