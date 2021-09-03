@@ -45,10 +45,15 @@ class CookieSigningLambda extends RequestStreamHandler {
       ipRange
     )
 
+    // CORS header is just for localhost to get spike working. Real header would have to be environment-specific. On
+    // integration, it should return the intg domain or localhost, depending on the Host header in the request.
     val response =
       s"""{
         |    "isBase64Encoded": false,
         |    "statusCode": 200,
+        |    "headers": {
+        |       "Access-Control-Allow-Origin": "http://localhost:9000"
+        |    },
         |    "multiValueHeaders": {
         |       "Set-Cookie": [
         |         "${cookies.getPolicy.getKey}=${cookies.getPolicy.getValue}; Path=/; Secure; HttpOnly",
