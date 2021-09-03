@@ -9,6 +9,7 @@ import java.util.{Base64, Date}
 import com.amazonaws.services.cloudfront.CloudFrontCookieSigner
 import com.amazonaws.services.cloudfront.util.SignerUtils.Protocol
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
+import com.auth0.jwt.JWT
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.parser.parse
 
@@ -27,14 +28,17 @@ class CookieSigningLambda extends RequestStreamHandler {
     val authHeader = json.hcursor.downField("headers").focus.flatMap(_.asArray).get
       .find(j => j.findAllByKey("authorization").nonEmpty).get
       .hcursor.get[String]("authorization").toOption.get
-    val token = authHeader.stripPrefix("Bearer ")
+    val rawToken = authHeader.stripPrefix("Bearer ")
 
-    println(s"Authorization token: '$token'")
+    val decoded = JWT.decode(rawToken)
+    val userId = decoded.getSubject
+
+    println(s"User ID: $userId")
 
     val config: Config = ConfigFactory.load
 
     val encodedCert = config.getString("privateKeyBase64Encoded")
-    val decodedCert = Base64.getDecoder().decode(encodedCert)
+    val decodedCert = Base64.getDecoder.decode(encodedCert)
     val keySpec = new PKCS8EncodedKeySpec(decodedCert)
     val keyFactory = KeyFactory.getInstance("RSA")
     val privateKey = keyFactory.generatePrivate(keySpec)
