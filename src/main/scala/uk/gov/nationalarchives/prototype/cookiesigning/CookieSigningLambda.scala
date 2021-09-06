@@ -74,9 +74,9 @@ class CookieSigningLambda extends RequestStreamHandler {
         |    },
         |    "multiValueHeaders": {
         |       "Set-Cookie": [
-        |         "${cookies.getPolicy.getKey}=${cookies.getPolicy.getValue}; Path=/; Secure; HttpOnly",
-        |         "${cookies.getKeyPairId.getKey}=${cookies.getKeyPairId.getValue}; Path=/; Secure; HttpOnly",
-        |         "${cookies.getSignature.getKey}=${cookies.getSignature.getValue}; Path=/; Secure; HttpOnly"
+        |         "${cookies.getPolicy.getKey}=${cookies.getPolicy.getValue}; Path=/; Secure; HttpOnly; SameSite=None",
+        |         "${cookies.getKeyPairId.getKey}=${cookies.getKeyPairId.getValue}; Path=/; Secure; HttpOnly; SameSite=None",
+        |         "${cookies.getSignature.getKey}=${cookies.getSignature.getValue}; Path=/; Secure; HttpOnly; SameSite=None"
         |       ]
         |    },
         |    "body": "{}"
