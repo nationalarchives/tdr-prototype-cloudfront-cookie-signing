@@ -28,6 +28,7 @@ class CookieSigningLambda extends RequestStreamHandler {
     val authHeader = json.hcursor.downField("headers").get[String]("Authorization").toOption.get
     val rawToken = authHeader.stripPrefix("Bearer ")
 
+    // In the real implementation, validate the token like the export authoriser does
     val decoded = JWT.decode(rawToken)
     val userId = decoded.getSubject
 
