@@ -69,7 +69,8 @@ class CookieSigningLambda extends RequestStreamHandler {
         |    "isBase64Encoded": false,
         |    "statusCode": 200,
         |    "headers": {
-        |       "Access-Control-Allow-Origin": "http://localhost:9000"
+        |       "Access-Control-Allow-Origin": "http://localhost:9000",
+        |       "Access-Control-Allow-Credentials": "true"
         |    },
         |    "multiValueHeaders": {
         |       "Set-Cookie": [
